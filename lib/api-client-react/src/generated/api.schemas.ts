@@ -9,11 +9,35 @@ export interface HealthStatus {
   status: string;
 }
 
+export interface ErrorResponse {
+  error: string;
+}
+
+export interface SuccessResponse {
+  success: boolean;
+}
+
+export interface AuthCredentials {
+  /** @minLength 3 */
+  username: string;
+  /** @minLength 4 */
+  password: string;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  createdAt: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+}
+
 export interface Conversation {
   id: number;
   title: string;
-  /** exe_dll | ui_design | website | general */
-  mode: string;
   createdAt: string;
   updatedAt: string;
   messageCount: number;
@@ -21,39 +45,70 @@ export interface Conversation {
 
 export interface ConversationInput {
   title: string;
-  /** exe_dll | ui_design | website | general */
-  mode: string;
 }
+
+export type MessageRole = typeof MessageRole[keyof typeof MessageRole];
+
+
+export const MessageRole = {
+  user: 'user',
+  assistant: 'assistant',
+} as const;
 
 export interface Message {
   id: number;
-  conversationId: number;
-  /** user | assistant */
-  role: string;
+  role: MessageRole;
   content: string;
   createdAt: string;
 }
 
-export interface ConversationWithMessages {
+export interface ConversationDetail {
   id: number;
   title: string;
-  mode: string;
   createdAt: string;
   updatedAt: string;
   messages: Message[];
 }
 
-export type ConversationStatsByMode = {
-  exe_dll: number;
-  ui_design: number;
-  website: number;
-  general: number;
-};
+export interface MessageInput {
+  /** @minLength 1 */
+  content: string;
+}
 
-export interface ConversationStats {
+export type TaskStatus = typeof TaskStatus[keyof typeof TaskStatus];
+
+
+export const TaskStatus = {
+  pending: 'pending',
+  running: 'running',
+  completed: 'completed',
+  failed: 'failed',
+  cancelled: 'cancelled',
+} as const;
+
+export interface Task {
+  id: number;
+  title: string;
+  description: string;
+  status: TaskStatus;
+  /** @nullable */
+  result?: string | null;
+  /** @nullable */
+  error?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TaskInput {
+  title: string;
+  description: string;
+  prompt: string;
+}
+
+export interface Stats {
   totalConversations: number;
   totalMessages: number;
-  byMode: ConversationStatsByMode;
-  recentConversations: Conversation[];
+  totalTasks: number;
+  completedTasks: number;
 }
 

@@ -5,12 +5,11 @@
  * AI Studio API
  * OpenAPI spec version: 0.1.0
  */
+import type { MessageRole } from './messageRole';
 
 export interface Message {
   id: number;
-  conversationId: number;
-  /** user | assistant */
-  role: string;
+  role: MessageRole;
   content: string;
   createdAt: string;
 }

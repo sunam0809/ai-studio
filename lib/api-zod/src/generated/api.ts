@@ -17,12 +17,68 @@ export const HealthCheckResponse = zod.object({
 
 
 /**
+ * @summary Register a new user
+ */
+export const registerBodyUsernameMin = 3;
+
+export const registerBodyPasswordMin = 4;
+
+
+
+export const RegisterBody = zod.object({
+  "username": zod.string().min(registerBodyUsernameMin),
+  "password": zod.string().min(registerBodyPasswordMin)
+})
+
+
+/**
+ * @summary Login
+ */
+export const loginBodyUsernameMin = 3;
+
+export const loginBodyPasswordMin = 4;
+
+
+
+export const LoginBody = zod.object({
+  "username": zod.string().min(loginBodyUsernameMin),
+  "password": zod.string().min(loginBodyPasswordMin)
+})
+
+export const LoginResponse = zod.object({
+  "user": zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "createdAt": zod.string()
+}),
+  "token": zod.string()
+})
+
+
+/**
+ * @summary Logout
+ */
+export const LogoutResponse = zod.object({
+  "success": zod.boolean()
+})
+
+
+/**
+ * @summary Get current user
+ */
+export const GetMeResponse = zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "createdAt": zod.string()
+})
+
+
+/**
  * @summary List all conversations
  */
 export const ListConversationsResponseItem = zod.object({
   "id": zod.number(),
   "title": zod.string(),
-  "mode": zod.string().describe('exe_dll | ui_design | website | general'),
   "createdAt": zod.string(),
   "updatedAt": zod.string(),
   "messageCount": zod.number()
@@ -34,36 +90,12 @@ export const ListConversationsResponse = zod.array(ListConversationsResponseItem
  * @summary Create a new conversation
  */
 export const CreateConversationBody = zod.object({
-  "title": zod.string(),
-  "mode": zod.string().describe('exe_dll | ui_design | website | general')
+  "title": zod.string()
 })
 
 
 /**
- * @summary Get conversation statistics
- */
-export const GetConversationStatsResponse = zod.object({
-  "totalConversations": zod.number(),
-  "totalMessages": zod.number(),
-  "byMode": zod.object({
-  "exe_dll": zod.number(),
-  "ui_design": zod.number(),
-  "website": zod.number(),
-  "general": zod.number()
-}),
-  "recentConversations": zod.array(zod.object({
-  "id": zod.number(),
-  "title": zod.string(),
-  "mode": zod.string().describe('exe_dll | ui_design | website | general'),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string(),
-  "messageCount": zod.number()
-}))
-})
-
-
-/**
- * @summary Get a conversation with its messages
+ * @summary Get a conversation with messages
  */
 export const GetConversationParams = zod.object({
   "id": zod.coerce.number()
@@ -72,13 +104,11 @@ export const GetConversationParams = zod.object({
 export const GetConversationResponse = zod.object({
   "id": zod.number(),
   "title": zod.string(),
-  "mode": zod.string(),
   "createdAt": zod.string(),
   "updatedAt": zod.string(),
   "messages": zod.array(zod.object({
   "id": zod.number(),
-  "conversationId": zod.number(),
-  "role": zod.string().describe('user | assistant'),
+  "role": zod.enum(['user', 'assistant']),
   "content": zod.string(),
   "createdAt": zod.string()
 }))
@@ -92,21 +122,117 @@ export const DeleteConversationParams = zod.object({
   "id": zod.coerce.number()
 })
 
+export const DeleteConversationResponse = zod.object({
+  "success": zod.boolean()
+})
+
 
 /**
- * @summary List messages in a conversation
+ * @summary Send a message and get AI response
  */
-export const ListMessagesParams = zod.object({
+export const SendMessageParams = zod.object({
   "id": zod.coerce.number()
 })
 
-export const ListMessagesResponseItem = zod.object({
+
+
+
+export const SendMessageBody = zod.object({
+  "content": zod.string().min(1)
+})
+
+export const SendMessageResponse = zod.object({
   "id": zod.number(),
-  "conversationId": zod.number(),
-  "role": zod.string().describe('user | assistant'),
+  "role": zod.enum(['user', 'assistant']),
   "content": zod.string(),
   "createdAt": zod.string()
 })
-export const ListMessagesResponse = zod.array(ListMessagesResponseItem)
+
+
+/**
+ * @summary List background tasks
+ */
+export const ListTasksResponseItem = zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "status": zod.enum(['pending', 'running', 'completed', 'failed', 'cancelled']),
+  "result": zod.string().nullish(),
+  "error": zod.string().nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+export const ListTasksResponse = zod.array(ListTasksResponseItem)
+
+
+/**
+ * @summary Create a background task
+ */
+export const CreateTaskBody = zod.object({
+  "title": zod.string(),
+  "description": zod.string(),
+  "prompt": zod.string()
+})
+
+
+/**
+ * @summary Get a task by ID
+ */
+export const GetTaskParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetTaskResponse = zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "status": zod.enum(['pending', 'running', 'completed', 'failed', 'cancelled']),
+  "result": zod.string().nullish(),
+  "error": zod.string().nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Delete a task
+ */
+export const DeleteTaskParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteTaskResponse = zod.object({
+  "success": zod.boolean()
+})
+
+
+/**
+ * @summary Cancel a running task
+ */
+export const CancelTaskParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const CancelTaskResponse = zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "status": zod.enum(['pending', 'running', 'completed', 'failed', 'cancelled']),
+  "result": zod.string().nullish(),
+  "error": zod.string().nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Get user stats summary
+ */
+export const GetStatsResponse = zod.object({
+  "totalConversations": zod.number(),
+  "totalMessages": zod.number(),
+  "totalTasks": zod.number(),
+  "completedTasks": zod.number()
+})
 
 

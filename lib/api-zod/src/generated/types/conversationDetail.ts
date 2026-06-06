@@ -5,11 +5,12 @@
  * AI Studio API
  * OpenAPI spec version: 0.1.0
  */
+import type { Message } from './message';
 
-export interface Conversation {
+export interface ConversationDetail {
   id: number;
   title: string;
   createdAt: string;
   updatedAt: string;
-  messageCount: number;
+  messages: Message[];
 }

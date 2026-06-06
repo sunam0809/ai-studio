@@ -6,10 +6,19 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './authCredentials';
+export * from './authResponse';
 export * from './conversation';
+export * from './conversationDetail';
 export * from './conversationInput';
-export * from './conversationStats';
-export * from './conversationStatsByMode';
-export * from './conversationWithMessages';
+export * from './errorResponse';
 export * from './healthStatus';
 export * from './message';
+export * from './messageInput';
+export * from './messageRole';
+export * from './stats';
+export * from './successResponse';
+export * from './task';
+export * from './taskInput';
+export * from './taskStatus';
+export * from './user';

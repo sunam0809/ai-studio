@@ -6,10 +6,8 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface Conversation {
-  id: number;
+export interface TaskInput {
   title: string;
-  createdAt: string;
-  updatedAt: string;
-  messageCount: number;
+  description: string;
+  prompt: string;
 }
