@@ -1,21 +1,25 @@
 services:
   - type: web
-    name: ai-studio-api
+    name: ai-studio
     runtime: node
-    buildCommand: pnpm install --no-frozen-lockfile && pnpm run build
+    plan: free
+    buildCommand: >
+      npm install -g pnpm &&
+      pnpm install --no-frozen-lockfile &&
+      pnpm --filter @workspace/api-spec run codegen &&
+      pnpm --filter @workspace/api-server run build &&
+      PORT=3 BASE_PATH=/ pnpm --filter @workspace/ai-studio run build &&
+      cp -r artifacts/ai-studio/dist/public artifacts/api-server/dist/public
     startCommand: node artifacts/api-server/dist/index.mjs
-    healthCheckPath: /api/healthz
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         generateValue: false
-        value: "10000"
-      - key: DATABASE_URL
-        sync: false
+        value: 10000
+      - key: SESSION_SECRET
+        generateValue: true
       - key: OPENAI_API_KEY
         sync: false
-      - key: CLERK_SECRET_KEY
-        sync: false
-      - key: CLERK_PUBLISHABLE_KEY
+      - key: DATABASE_URL
         sync: false

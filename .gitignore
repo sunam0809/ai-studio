@@ -47,7 +47,3 @@ Thumbs.db
 # Replit
 .cache/
 .local/
-.agents/
-.replit
-replit.nix
-.config/
