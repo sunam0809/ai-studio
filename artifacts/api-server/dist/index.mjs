@@ -69985,7 +69985,7 @@ app.use("/api", routes_default);
 if (process.env.NODE_ENV === "production") {
   const publicPath = path2.join(__dirname2, "public");
   app.use(import_express7.default.static(publicPath));
-  app.get("*", (_req, res) => {
+  app.get(/(.*)/, (_req, res) => {
     res.sendFile(path2.join(publicPath, "index.html"));
   });
 }
